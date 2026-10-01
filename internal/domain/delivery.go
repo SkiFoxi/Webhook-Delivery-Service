@@ -5,13 +5,13 @@ import "time"
 type DeliveryStatus string
 
 const (
-	DelivPending DeliveryStatus = "panding"
+	DelivPending DeliveryStatus = "pending"
 	DelivSuccess DeliveryStatus = "success"
 	DelivFailed  DeliveryStatus = "failed"
 )
 
 type Delivery struct {
-	ID, WebhookId, EventType string
+	ID, WebhookID, EventType string
 	Payload                  []byte
 	Status                   DeliveryStatus
 	Attempts                 int

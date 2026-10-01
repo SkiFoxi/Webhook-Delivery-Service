@@ -5,7 +5,7 @@ import (
 )
 
 type Webhook struct {
-	id string
+	Id string
 	URL string
 	Events []string
 	Secret string
