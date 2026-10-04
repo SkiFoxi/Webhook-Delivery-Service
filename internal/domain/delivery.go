@@ -12,9 +12,9 @@ const (
 
 type Delivery struct {
 	ID, WebhookID, EventType string
-	Payload                  []byte
+	Payload                  []byte //Это JSON Данные тела события
 	Status                   DeliveryStatus
-	Attempts                 int
+	Attempts                 int 	//Сколько раз пытались отправить
 	LastError                string
 	CreatedAt, UpdatedAt     time.Time
 }
