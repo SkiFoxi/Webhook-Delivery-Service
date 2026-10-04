@@ -26,10 +26,11 @@ func (wr *webhookRepo) Create(ctx context.Context, w *domain.Webhook) error {
 	}
 	wr.mu.Lock()
 	defer wr.mu.Unlock()
-	if _, ok := wr.webhooks[w.Id]; ok {
+	if _, ok := wr.webhooks[w.ID]; ok {
 		return domain.ErrWebhookExists
 	}
-	wr.webhooks[w.Id] = w
+	copyW := *w
+	wr.webhooks[w.ID] = &copyW
 	return nil
 
 }
@@ -52,7 +53,7 @@ func (wr *webhookRepo) ListByEvent(ctx context.Context, eventType string) ([]*do
 	if err := ctx.Err(); err != nil {
 		return nil, err
 	}
-	var result = make([]*domain.Webhook, 0)
+	result := make([]*domain.Webhook, 0)
 
 	wr.mu.RLock()
 	defer wr.mu.RUnlock()
