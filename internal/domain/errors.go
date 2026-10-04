@@ -9,4 +9,5 @@ var (
 	ErrInvalidURL    = errors.New("invalid url")
 	ErrNoEvents      = errors.New("at least one event required")
 	ErrWebhookExists = errors.New("webhook already exists")
+	ErrDeliveryExists = errors.New("delivery already exists")
 )

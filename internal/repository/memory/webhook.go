@@ -30,7 +30,7 @@ func (wr *webhookRepo) Create(ctx context.Context, w *domain.Webhook) error {
 		return domain.ErrWebhookExists
 	}
 	copyW := *w
-	wr.webhooks[w.ID] = &copyW
+	wr.webhooks[copyW.ID] = &copyW
 	return nil
 
 }
