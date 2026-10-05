@@ -14,7 +14,7 @@ type Delivery struct {
 	ID, WebhookID, EventType string
 	Payload                  []byte //Это JSON Данные тела события
 	Status                   DeliveryStatus
-	Attempts                 int 	//Сколько раз пытались отправить
+	Attempts                 int //Сколько раз пытались отправить
 	LastError                string
 	CreatedAt, UpdatedAt     time.Time
 }

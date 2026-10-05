@@ -11,18 +11,18 @@ import (
 )
 
 type Handler struct {
-	WebhookRepo domain.WebhookRepository
+	webhookRepo domain.WebhookRepository
 }
 
 func NewHandler(WebhookRepo domain.WebhookRepository) *Handler {
 	return &Handler{
-		WebhookRepo: WebhookRepo,
+		webhookRepo: WebhookRepo,
 	}
 }
 
 func (h *Handler) CreateWebhook(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
-		http.Error(w, "invalid request", http.StatusBadRequest)
+		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
 
@@ -33,7 +33,7 @@ func (h *Handler) CreateWebhook(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var req CreateWebhookRequest
-	if err := json.Unmarshal(body, req); err != nil {
+	if err := json.Unmarshal(body, &req); err != nil {
 		http.Error(w, "invalid json", http.StatusBadRequest)
 		return
 	}
@@ -51,16 +51,16 @@ func (h *Handler) CreateWebhook(w http.ResponseWriter, r *http.Request) {
 		CreatedAt: time.Now(),
 	}
 
-	if err := h.WebhookRepo.Create(r.Context(), webhook); err != nil {
-		http.Error(w, "cannot creat webhook", http.StatusInternalServerError)
+	if err := h.webhookRepo.Create(r.Context(), webhook); err != nil {
+		http.Error(w, "cannot create webhook", http.StatusInternalServerError)
 		return
 	}
 
 	response := WebhookResponse{
-		ID:       webhook.ID,
-		URL:      webhook.URL,
-		Events:   webhook.Events,
-		CreateAt: webhook.CreatedAt,
+		ID:        webhook.ID,
+		URL:       webhook.URL,
+		Events:    webhook.Events,
+		CreatedAt: webhook.CreatedAt,
 	}
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)

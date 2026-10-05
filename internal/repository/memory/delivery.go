@@ -45,7 +45,7 @@ func (dr *deliveryRepo) UpdateStatus(ctx context.Context, id string, status doma
 	arg, ok := dr.deliveries[id]
 	if !ok {
 		return domain.ErrNotFound
-	}	
+	}
 	arg.Status = status
 	arg.LastError = lastError
 	arg.UpdatedAt = time.Now()
