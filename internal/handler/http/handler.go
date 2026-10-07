@@ -2,21 +2,21 @@ package http
 
 import (
 	"encoding/json"
+	"errors"
 	"io"
 	"net/http"
-	"time"
-	"uuid"
 
 	"github.com/SkiFoxi/Webhook-Delivery-Service/internal/domain"
+	"github.com/SkiFoxi/Webhook-Delivery-Service/internal/service"
 )
 
 type Handler struct {
-	webhookRepo domain.WebhookRepository
+	webhookService *service.WebhookService
 }
 
-func NewHandler(WebhookRepo domain.WebhookRepository) *Handler {
+func NewHandler(webhookServ *service.WebhookService) *Handler {
 	return &Handler{
-		webhookRepo: WebhookRepo,
+		webhookService: webhookServ,
 	}
 }
 
@@ -38,26 +38,16 @@ func (h *Handler) CreateWebhook(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if req.URL == "" {
-		http.Error(w, "url is required", http.StatusBadRequest)
-		return
-	}
-
-	if len(req.Events) == 0 {
-		http.Error(w, "at least one event required", http.StatusBadRequest)
-		return
-	}
-
-	webhook := &domain.Webhook{
-		ID:        uuid.New().String(),
-		URL:       req.URL,
-		Events:    req.Events,
-		Secret:    uuid.New().String(),
-		CreatedAt: time.Now(),
-	}
-
-	if err := h.webhookRepo.Create(r.Context(), webhook); err != nil {
-		http.Error(w, "cannot create webhook", http.StatusInternalServerError)
+	webhook, err := h.webhookService.Create(r.Context(), req.URL, req.Events)
+	if err != nil {
+		switch {
+		case errors.Is(err, domain.ErrInvalidURL):
+			http.Error(w, "url is required", http.StatusBadRequest)
+		case errors.Is(err, domain.ErrNoEvents):
+			http.Error(w, "at least one event required", http.StatusBadRequest)
+		default:
+			http.Error(w, "internal error", http.StatusInternalServerError)
+		}
 		return
 	}
 

@@ -9,6 +9,7 @@ import (
 
 	httphandler "github.com/SkiFoxi/Webhook-Delivery-Service/internal/handler/http"
 	"github.com/SkiFoxi/Webhook-Delivery-Service/internal/repository/memory"
+	"github.com/SkiFoxi/Webhook-Delivery-Service/internal/service"
 )
 
 func TestCreateWebhook(t *testing.T) {
@@ -50,7 +51,8 @@ func TestCreateWebhook(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			webhookRepo := memory.NewWebhookRepo()
-			h := httphandler.NewHandler(webhookRepo)
+			webhookService := service.NewWebhookService(webhookRepo)
+			h := httphandler.NewHandler(webhookService)
 
 			req := httptest.NewRequest(tt.method, "/webhooks", strings.NewReader(tt.body))
 			req.Header.Set("Content-Type", "application/json")
