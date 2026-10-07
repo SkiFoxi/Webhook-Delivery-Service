@@ -38,8 +38,13 @@ func (h *Handler) CreateWebhook(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if req.URL == "" && len(req.Events) == 0 {
-		http.Error(w, "invalid url ", http.StatusBadRequest)
+	if req.URL == "" {
+		http.Error(w, "url is required", http.StatusBadRequest)
+		return
+	}
+
+	if len(req.Events) == 0 {
+		http.Error(w, "at least one event required", http.StatusBadRequest)
 		return
 	}
 

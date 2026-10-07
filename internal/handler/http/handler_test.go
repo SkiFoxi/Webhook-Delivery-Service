@@ -23,30 +23,30 @@ func TestCreateWebhook(t *testing.T) {
 		body:       `{"url": "https://example.com/hooks", "events": ["user.created"]}`,
 		wantStatus: http.StatusCreated,
 	},
-	{
-		name:       "empty url",
-		method:     http.MethodPost,
-		body:       `{"url": "", "events": ["user.created"]}`,
-		wantStatus: http.StatusBadRequest,
-	},
-	{
-		name:       "no events",
-		method:     http.MethodPost,
-		body:       `{"url": "https://example.com", "events": []}`,
-		wantStatus: http.StatusBadRequest,
-	},
-	{
-		name:       "invalid json",
-		method:     http.MethodPost,
-		body:       `{not json`,
-		wantStatus: http.StatusBadRequest,
-	},
-	{
-		name:       "wrong method",
-		method:     http.MethodGet,
-		body:       `{}`,
-		wantStatus: http.StatusMethodNotAllowed,
-	}}
+		{
+			name:       "empty url",
+			method:     http.MethodPost,
+			body:       `{"url": "", "events": ["user.created"]}`,
+			wantStatus: http.StatusBadRequest,
+		},
+		{
+			name:       "no events",
+			method:     http.MethodPost,
+			body:       `{"url": "https://example.com", "events": []}`,
+			wantStatus: http.StatusBadRequest,
+		},
+		{
+			name:       "invalid json",
+			method:     http.MethodPost,
+			body:       `{not json`,
+			wantStatus: http.StatusBadRequest,
+		},
+		{
+			name:       "wrong method",
+			method:     http.MethodGet,
+			body:       `{}`,
+			wantStatus: http.StatusMethodNotAllowed,
+		}}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			webhookRepo := memory.NewWebhookRepo()
