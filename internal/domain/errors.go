@@ -11,5 +11,5 @@ var (
 	ErrWebhookExists   = errors.New("webhook already exists")
 	ErrDeliveryExists  = errors.New("delivery already exists")
 	ErrDeliveryTimeout = errors.New("delivery timeout")
-	ErrDeliveryFaild   = errors.New("delivery faild")
+	ErrDeliveryFailed   = errors.New("delivery faild")
 )
