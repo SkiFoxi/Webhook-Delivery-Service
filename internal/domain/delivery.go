@@ -18,3 +18,10 @@ type Delivery struct {
 	LastError                string
 	CreatedAt, UpdatedAt     time.Time
 }
+
+type DeliveryJob struct {
+	DeliveryID string
+	WebhookURL string
+	Payload    []byte
+	Secret     string
+}
