@@ -32,18 +32,19 @@ func NewEventService(
 }
 
 func (s *EventService) Trigger(ctx context.Context, eventType string, payload []byte) error {
-	webhook, err := s.webhookRepo.ListByEvent(ctx, eventType)
+	webhooks, err := s.webhookRepo.ListByEvent(ctx, eventType)
 
 	if err != nil {
 		return err
 	}
 
-	if len(webhook) == 0 {
+	if len(webhooks) == 0 {
 		return nil
 	}
 
-	for _, wh := range webhook {
-		slog.Info("event triggered", "event_type", eventType, "webhooks_count", len(webhook))
+	slog.Info("event triggered", "event_type", eventType, "webhooks_count", len(webhooks))
+
+	for _, wh := range webhooks {
 		d := &domain.Delivery{
 			ID:        uuid.New().String(),
 			WebhookID: wh.ID,
@@ -61,8 +62,8 @@ func (s *EventService) Trigger(ctx context.Context, eventType string, payload []
 		job := domain.DeliveryJob{
 			DeliveryID: d.ID,
 			WebhookURL: wh.URL,
-			Payload: payload,
-			Secret: wh.Secret,
+			Payload:    payload,
+			Secret:     wh.Secret,
 		}
 		if err := s.pool.Submit(job); err != nil {
 			slog.Error("cannot submit job", "err", err, "job_id", d.ID)
