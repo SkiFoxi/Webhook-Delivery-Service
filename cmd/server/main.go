@@ -42,7 +42,13 @@ func main() {
 	mux.HandleFunc("POST /webhooks", handler.CreateWebhook)
 	mux.HandleFunc("POST /events", handler.TriggerEvent)
 
-	srv := &http.Server{Addr: ":8080", Handler: mux}
+	srv := &http.Server{
+		Addr:         ":8080",
+		Handler:      mux,
+		ReadTimeout:  5 * time.Second,  //Таймер на чтение запроса
+		WriteTimeout: 10 * time.Second, //Таймер на запись ответа
+		IdleTimeout:  60 * time.Second, //Время жизни соединения
+	}
 
 	go func() {
 		slog.Info("server starting", "addr", srv.Addr)
@@ -69,4 +75,5 @@ func main() {
 	workerPool.Stop()
 	slog.Info("worker pool stopped")
 	cancelWorkers() //Страховка
+	slog.Info("Exit")
 }
