@@ -1,6 +1,9 @@
 package http
 
-import "time"
+import (
+	"encoding/json"
+	"time"
+)
 
 type CreateWebhookRequest struct { //Должны принимать
 	URL    string   `json:"url"`
@@ -12,4 +15,9 @@ type WebhookResponse struct { //То, что будем отправлять
 	URL       string    `json:"url"`
 	Events    []string  `json:"events"`
 	CreatedAt time.Time `json:"created_at"`
+}
+
+type EventRequest struct {
+	Type    string          `json:"type"`
+	Payload json.RawMessage `json:"payload"`
 }
