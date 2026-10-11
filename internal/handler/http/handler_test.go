@@ -51,8 +51,10 @@ func TestCreateWebhook(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			webhookRepo := memory.NewWebhookRepo()
+			deliveryRepo := memory.NewDeliveryRepo()
 			webhookService := service.NewWebhookService(webhookRepo)
-			h := httphandler.NewHandler(webhookService)
+			eventService := service.NewEventService(webhookRepo, deliveryRepo, nil)
+			h := httphandler.NewHandler(webhookService, eventService)
 
 			req := httptest.NewRequest(tt.method, "/webhooks", strings.NewReader(tt.body))
 			req.Header.Set("Content-Type", "application/json")

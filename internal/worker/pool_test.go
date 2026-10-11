@@ -84,7 +84,10 @@ func TestPool_HandlesSendError(t *testing.T) {
     defer cancel()
 
     pool.Start(ctx)
-    pool.Submit(domain.DeliveryJob{DeliveryID: "d-1"})
+    err := pool.Submit(domain.DeliveryJob{DeliveryID: "d-1"})
+	if err != nil {
+		t.Fatalf("submit: %v", err)
+	}
     pool.Stop()
 
     if repo.statuses["d-1"] != domain.DelivFailed {
