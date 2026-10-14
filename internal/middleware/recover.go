@@ -8,16 +8,13 @@ import (
 
 func Recover(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		defer func()  {
+		defer func() {
 			if p := recover(); p != nil {
-				slog.Error("panic recovered",
-					"err", p,
-					"stack", string(debug.Stack()),
-				)
 				slog.Error("panic recover",
 					"err", p,
 					"path", r.URL.Path,
 					"method", r.Method,
+					"stack", string(debug.Stack()), //Чувствительные данные
 				)
 				http.Error(w, "internal error", http.StatusInternalServerError)
 			}
@@ -25,4 +22,4 @@ func Recover(next http.Handler) http.Handler {
 
 		next.ServeHTTP(w, r)
 	})
-} 
+}
