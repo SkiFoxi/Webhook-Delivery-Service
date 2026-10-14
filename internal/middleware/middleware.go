@@ -7,9 +7,9 @@ import (
 
 type Middleware func(http.Handler) http.Handler
 
-func Chain (h http.Handler, middleware ...Middleware) http.Handler {
-	for i := len(middleware) - 1; i >= 0; i--{
-		h = middleware[i](h)
+func Chain (h http.Handler, middlewareы ...Middleware) http.Handler {
+	for i := len(middlewareы) - 1; i >= 0; i-- {
+		h = middlewareы[i](h)
 	}
 	return h
 }
