@@ -7,8 +7,8 @@ func Auth(apiKey string) Middleware {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			key := r.Header.Get("X-API-Key")
 			if key == "" || key != apiKey {
-				//Для Прод версии используем crypto/subtle
-				//Не особо безопасно в проде
+				// == - не особо безопасно в проде
+				//Для Прод версии используем сравнение через crypto/subtle
 				http.Error(w, "unauthorized", http.StatusUnauthorized)
 				return
 			}

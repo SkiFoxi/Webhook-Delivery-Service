@@ -11,6 +11,7 @@ import (
 	"time"
 
 	httphandler "github.com/SkiFoxi/Webhook-Delivery-Service/internal/handler/http"
+	"github.com/SkiFoxi/Webhook-Delivery-Service/internal/middleware"
 	"github.com/SkiFoxi/Webhook-Delivery-Service/internal/repository/memory"
 	httpsender "github.com/SkiFoxi/Webhook-Delivery-Service/internal/sender"
 	"github.com/SkiFoxi/Webhook-Delivery-Service/internal/service"
@@ -42,9 +43,14 @@ func main() {
 	mux.HandleFunc("POST /webhooks", handler.CreateWebhook)
 	mux.HandleFunc("POST /events", handler.TriggerEvent)
 
+	handlerWithMiddleware := middleware.Chain(mux,
+		middleware.Recover,
+		middleware.Logging,
+		middleware.Auth("secret-api-key"), //"secret-api-key" // Заменится переменной окружения
+	)
 	srv := &http.Server{
 		Addr:         ":8080",
-		Handler:      mux,
+		Handler:      handlerWithMiddleware,
 		ReadTimeout:  5 * time.Second,  //Таймер на чтение запроса
 		WriteTimeout: 10 * time.Second, //Таймер на запись ответа
 		IdleTimeout:  60 * time.Second, //Время жизни соединения
